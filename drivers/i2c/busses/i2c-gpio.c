@@ -93,7 +93,7 @@ static int of_i2c_gpio_get_pins(struct device_node *np,
 
 	*sda_pin = of_get_gpio(np, 0);
 	*scl_pin = of_get_gpio(np, 1);
-
+	
 	if (*sda_pin == -EPROBE_DEFER || *scl_pin == -EPROBE_DEFER)
 		return -EPROBE_DEFER;
 
@@ -130,8 +130,16 @@ static int i2c_gpio_probe(struct platform_device *pdev)
 	struct i2c_gpio_platform_data *pdata;
 	struct i2c_algo_bit_data *bit_data;
 	struct i2c_adapter *adap;
-	unsigned int sda_pin, scl_pin;
+	/*unsigned*/ int sda_pin, scl_pin;
 	int ret;
+
+	sda_pin = of_get_named_gpio(pdev->dev.of_node, "sda-gpios", 0);
+	scl_pin = of_get_named_gpio(pdev->dev.of_node, "scl-gpios", 0);
+
+	if (sda_pin == -EPROBE_DEFER || scl_pin == -EPROBE_DEFER)
+		return -EPROBE_DEFER;
+
+	if (!(gpio_is_valid(sda_pin) && gpio_is_valid(scl_pin))){
 
 	/* First get the GPIO pins; if it fails, we'll defer the probe. */
 	if (pdev->dev.of_node) {
@@ -147,6 +155,9 @@ static int i2c_gpio_probe(struct platform_device *pdev)
 		scl_pin = pdata->scl_pin;
 	}
 
+	}
+	
+	
 	ret = devm_gpio_request(&pdev->dev, sda_pin, "sda");
 	if (ret) {
 		if (ret == -EINVAL)

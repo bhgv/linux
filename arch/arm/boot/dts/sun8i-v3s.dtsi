@@ -45,6 +45,8 @@
 #include <dt-bindings/interrupt-controller/arm-gic.h>
 #include <dt-bindings/pinctrl/sun4i-a10.h>
 
+#include <dt-bindings/gpio/gpio.h>
+
 / {
 	#address-cells = <1>;
 	#size-cells = <1>;
@@ -237,6 +239,13 @@
 				function = "i2c0";
 			};
 
+/*
+			i2c1_pins: i2c1 {
+				pins = "PE21", "PE22";
+				function = "i2c1";
+			};
+*/
+
 			uart0_pins_a: uart0@0 {
 				pins = "PB8", "PB9";
 				function = "uart0";
@@ -349,6 +358,25 @@
 			pinctrl-names = "default";
 			pinctrl-0 = <&i2c0_pins>;
 			status = "disabled";
+			#address-cells = <1>;
+			#size-cells = <0>;
+		};
+
+		i2c1: 0 /*i2c@1c2b000*/ {
+			compatible = "i2c-gpio";
+			sda-gpios = <&pio 4 22 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>;
+			scl-gpios = <&pio 4 21 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>;
+			i2c-gpio,delay-us = <2>;	/* ~100 kHz */
+			
+			/*
+			reg = <0x01c2b000 0x400>;
+			interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&ccu CLK_BUS_I2C1>;
+			resets = <&ccu RST_BUS_I2C1>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&i2c1_pins>;
+			status = "disabled";
+			*/
 			#address-cells = <1>;
 			#size-cells = <0>;
 		};

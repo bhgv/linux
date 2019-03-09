@@ -1011,6 +1011,23 @@ config TOUCHSCREEN_TSC_SERIO
 config TOUCHSCREEN_TSC200X_CORE
 	tristate
 
+config TOUCHSCREEN_TSC2003
+	tristate "TSC2003 based touchscreens"
+	depends on I2C
+	select I2C_GPIO
+	help
+	  This driver is based on tsc2007 one. It adds some additional
+	  tsc2003 features.
+	  It is also depends to gpio and uses soft i2c_gpio driver. and
+	  works without using of irq.
+
+	  Say Y here if you have a TSC2003 based touchscreen.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called tsc2003.
+
 config TOUCHSCREEN_TSC2004
 	tristate "TSC2004 based touchscreens"
 	depends on I2C
@@ -1040,7 +1057,11 @@ config TOUCHSCREEN_TSC2005
 config TOUCHSCREEN_TSC2007
 	tristate "TSC2007 based touchscreens"
 	depends on I2C
+	select I2C_GPIO
 	help
+	  It is changed to use gpio and soft i2c_gpio driver. and
+	  works without using of irq.
+
 	  Say Y here if you have a TSC2007 based touchscreen.
 
 	  If unsure, say N.
