@@ -696,6 +696,8 @@ static struct class *spidev_class;
 static const struct of_device_id spidev_dt_ids[] = {
 	{ .compatible = "rohm,dh2228fv" },
 	{ .compatible = "lineartechnology,ltc2488" },
+	{ .compatible = "allwinner,sun4i-a10-spi" },
+	{ .compatible = "allwinner,sun6i-a31-spi" },
 	{ .compatible = "ge,achc" },
 	{},
 };

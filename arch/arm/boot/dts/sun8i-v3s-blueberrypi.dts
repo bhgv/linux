@@ -51,10 +51,7 @@
 
 	aliases {
 		serial0 = &uart0;
-	};
-
-	chosen {
-		stdout-path = "serial0:115200n8";
+		spi0 = &spi0;
 	};
 
 	leds {
@@ -70,11 +67,13 @@
 };
 
 &mmc0 {
-	pinctrl-0 = <&mmc0_pins_a>;
+	pinctrl-0 = <&mmc0_pins>;
 	pinctrl-names = "default";
 	broken-cd;
 	bus-width = <4>;
+	/**/
 	vmmc-supply = <&reg_vcc3v3>;
+	/**/
 	status = "okay";
 };
 
@@ -94,7 +93,9 @@
 	pinctrl-names = "default";
 	broken-cd;
 	bus-width = <4>;
+	/**/
 	vmmc-supply = <&reg_vcc3v3>;
+	/**/
 	status = "okay";
 };
 
@@ -124,6 +125,40 @@
         reg = <0x48>;
     };
 */
+};
+
+
+&spi0 {
+    status = "okay";
+
+	/**/
+	spidev@0 {
+		compatible = "allwinner,sun8i-h3-spi";
+		reg = <1>;
+		spi-max-frequency = <100000>;
+		
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+	/**/
+
+    flash: spiflash@0 {
+        compatible = "jedec,spi-nor"; /* "winbond,w25q128"; */
+        spi-max-frequency = <80000000>;
+        reg = <0>;
+
+        #address-cells = <1>;
+        #size-cells = <1>;
+
+        m25p,fast-read;
+
+		/**
+        partition@0 {
+            label = "data";
+            reg = <0x0 0x1000000>;
+        };
+        /**/
+    };
 };
 
 
