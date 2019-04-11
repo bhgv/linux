@@ -64,7 +64,7 @@
 
 		simplefb_lcd: framebuffer@0 {
 			compatible = "allwinner,simple-framebuffer",
-				     "simple-framebuffer";
+					 "simple-framebuffer";
 			allwinner,pipeline = "de0-lcd0";
 			clocks = <&ccu CLK_BUS_TCON0>, <&ccu CLK_BUS_DE>,
 				 <&ccu CLK_DE>, <&ccu CLK_TCON0>;
@@ -87,9 +87,9 @@
 	timer {
 		compatible = "arm,armv7-timer";
 		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
-			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
-			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
-			     <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>;
+				 <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
+				 <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
+				 <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>;
 	};
 
 	clocks {
@@ -119,35 +119,31 @@
 		ranges;
 
 /* VVV */
-
-
-	syscon: syscon@1c00000 {
+		syscon: syscon@1c00000 {
 			compatible = "allwinner,sun8i-v3s-system-controller",
-				"syscon";
+							"syscon";
 			reg = <0x01c00000 0x1000>;
-	};
+		};
 
-	
-	display_clocks: clock@1000000 {
+		display_clocks: clock@1000000 {
 			compatible = "allwinner,sun8i-v3s-de2-clk";
 			reg = <0x01000000 0x100000>;
 			clocks = <&ccu CLK_DE>,
-				 <&ccu CLK_BUS_DE>;
+					 <&ccu CLK_BUS_DE>;
 			clock-names = "mod",
-				      "bus";
+						  "bus";
 			resets = <&ccu RST_BUS_DE>;
 			#clock-cells = <1>;
 			#reset-cells = <1>;
-			
 		};
 
 		mixer0: mixer@1100000 {
 			compatible = "allwinner,sun8i-v3s-de2-mixer";
 			reg = <0x01100000 0x100000>;
 			clocks = <&display_clocks 0>,
-				 <&display_clocks 6>;
+					 <&display_clocks 6>;
 			clock-names = "bus",
-				      "mod";
+						  "mod";
 			resets = <&display_clocks 0>;
 			assigned-clocks = <&display_clocks 6>;
 			assigned-clock-rates = <150000000>;
@@ -175,9 +171,9 @@
 			reg = <0x01c0c000 0x1000>;
 			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
 			clocks = <&ccu CLK_BUS_TCON0>,
-				 <&ccu CLK_TCON0>;
+					 <&ccu CLK_TCON0>;
 			clock-names = "ahb",
-				      "tcon-ch0";
+						  "tcon-ch0";
 			clock-output-names = "tcon-pixel-clock";
 			resets = <&ccu RST_BUS_TCON0>;
 			reset-names = "lcd";
@@ -205,9 +201,8 @@
 				};
 			};
 		};
-	
 
-	csi1: csi@1cb4000 {
+		csi1: csi@1cb4000 {
 			compatible = "allwinner,sun8i-v3s-csi";
 			reg = <0x01cb4000 0x1000>;
 			interrupts = <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>;
@@ -218,14 +213,9 @@
 			resets = <&ccu RST_BUS_CSI>;
 			status = "disabled";
 		};
-		
+
 
 /* AAA */
-
-
-
-
-
 
 
 		dma: dma-controller@01c02000 {
@@ -241,13 +231,13 @@
 			compatible = "allwinner,sun7i-a20-mmc";
 			reg = <0x01c0f000 0x1000>;
 			clocks = <&ccu CLK_BUS_MMC0>,
-				 <&ccu CLK_MMC0>,
-				 <&ccu CLK_MMC0_OUTPUT>,
-				 <&ccu CLK_MMC0_SAMPLE>;
+					 <&ccu CLK_MMC0>,
+					 <&ccu CLK_MMC0_OUTPUT>,
+					 <&ccu CLK_MMC0_SAMPLE>;
 			clock-names = "ahb",
-				      "mmc",
-				      "output",
-				      "sample";
+						  "mmc",
+						  "output",
+						  "sample";
 			resets = <&ccu RST_BUS_MMC0>;
 			reset-names = "ahb";
 			interrupts = <GIC_SPI 60 IRQ_TYPE_LEVEL_HIGH>;
@@ -260,13 +250,13 @@
 			compatible = "allwinner,sun7i-a20-mmc";
 			reg = <0x01c10000 0x1000>;
 			clocks = <&ccu CLK_BUS_MMC1>,
-				 <&ccu CLK_MMC1>,
-				 <&ccu CLK_MMC1_OUTPUT>,
-				 <&ccu CLK_MMC1_SAMPLE>;
+					 <&ccu CLK_MMC1>,
+					 <&ccu CLK_MMC1_OUTPUT>,
+					 <&ccu CLK_MMC1_SAMPLE>;
 			clock-names = "ahb",
-				      "mmc",
-				      "output",
-				      "sample";
+						  "mmc",
+						  "output",
+						  "sample";
 			resets = <&ccu RST_BUS_MMC1>;
 			reset-names = "ahb";
 			interrupts = <GIC_SPI 61 IRQ_TYPE_LEVEL_HIGH>;
@@ -275,7 +265,7 @@
 			#size-cells = <0>;
 		};
 
-/*
+		/*
 		mmc2: mmc@01c11000 {
 			compatible = "allwinner,sun7i-a20-mmc";
 			reg = <0x01c11000 0x1000>;
@@ -284,9 +274,9 @@
 				 <&ccu CLK_MMC2_OUTPUT>,
 				 <&ccu CLK_MMC2_SAMPLE>;
 			clock-names = "ahb",
-				      "mmc",
-				      "output",
-				      "sample";
+					  "mmc",
+					  "output",
+					  "sample";
 			resets = <&ccu RST_BUS_MMC2>;
 			reset-names = "ahb";
 			interrupts = <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>;
@@ -294,7 +284,7 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 		};
-*/
+		*/
 
 		usb_otg: usb@01c19000 {
 			compatible = "allwinner,sun8i-h3-musb";
@@ -312,9 +302,9 @@
 		usbphy: phy@01c19400 {
 			compatible = "allwinner,sun8i-v3s-usb-phy";
 			reg = <0x01c19400 0x2c>,
-			      <0x01c1a800 0x4>;
+				  <0x01c1a800 0x4>;
 			reg-names = "phy_ctrl",
-				    "pmu0";
+						"pmu0";
 			clocks = <&ccu CLK_USB_PHY0>;
 			clock-names = "usb0_phy";
 			resets = <&ccu RST_USB_PHY0>;
@@ -322,28 +312,27 @@
 			status = "disabled";
 			#phy-cells = <1>;
 		};
-		
+
 /* VVV */
 
-	ehci0: usb@01c1a000 {
-                         compatible = "allwinner,sun8i-v3s-ehci", "generic-ehci";
-                         reg = <0x01c1a000 0x100>;
-                         interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
-                         clocks = <&ccu CLK_BUS_EHCI0>, <&ccu CLK_BUS_OHCI0>;
-                         resets = <&ccu RST_BUS_EHCI0>, <&ccu RST_BUS_OHCI0>;
-                         status = "disabled";
-                         
-                 };
-	
-	ohci0: usb@01c1a400 {
-                         compatible = "allwinner,sun8i-v3s-ohci", "generic-ohci";
-                         reg = <0x01c1a400 0x100>;
-                         interrupts = <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>;
-                         clocks = <&ccu CLK_BUS_EHCI0>, <&ccu CLK_BUS_OHCI0>,
-                                  <&ccu CLK_USB_OHCI0>;
-                         resets = <&ccu RST_BUS_EHCI0>, <&ccu RST_BUS_OHCI0>;
-                         status = "disabled";
-                 }; 
+		ehci0: usb@01c1a000 {
+			compatible = "allwinner,sun8i-v3s-ehci", "generic-ehci";
+			reg = <0x01c1a000 0x100>;
+			interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&ccu CLK_BUS_EHCI0>, <&ccu CLK_BUS_OHCI0>;
+			resets = <&ccu RST_BUS_EHCI0>, <&ccu RST_BUS_OHCI0>;
+			status = "disabled";
+		};
+
+		ohci0: usb@01c1a400 {
+			compatible = "allwinner,sun8i-v3s-ohci", "generic-ohci";
+			reg = <0x01c1a400 0x100>;
+			interrupts = <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&ccu CLK_BUS_EHCI0>, <&ccu CLK_BUS_OHCI0>,
+					 <&ccu CLK_USB_OHCI0>;
+			resets = <&ccu RST_BUS_EHCI0>, <&ccu RST_BUS_OHCI0>;
+			status = "disabled";
+		};
 
 /* AAA */
 
@@ -360,14 +349,14 @@
 			compatible = "allwinner,sun6i-a31-rtc";
 			reg = <0x01c20400 0x54>;
 			interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>,
-				     <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>;
+						 <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>;
 		};
 
 		pio: pinctrl@01c20800 {
 			compatible = "allwinner,sun8i-v3s-pinctrl";
 			reg = <0x01c20800 0x400>;
 			interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>,
-				     <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
+						 <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
 			clocks = <&ccu CLK_BUS_PIO>, <&osc24M>, <&osc32k>;
 			clock-names = "apb", "hosc", "losc";
 			gpio-controller;
@@ -380,12 +369,12 @@
 				function = "i2c0";
 			};
 
-/*
+			/*
 			i2c1_pins: i2c1 {
 				pins = "PE21", "PE22";
 				function = "i2c1";
 			};
-*/
+			*/
 
 			uart0_pins_a: uart0@0 {
 				pins = "PB8", "PB9";
@@ -395,7 +384,7 @@
 
 			mmc0_pins: mmc0@0 {
 				pins = "PF0", "PF1", "PF2", "PF3",
-				       "PF4", "PF5";
+					   "PF4", "PF5";
 				function = "mmc0";
 				drive-strength = <30>;
 				bias-pull-up;
@@ -403,7 +392,7 @@
 
 			mmc1_pins: mmc1@0 {
 				pins = "PG0", "PG1", "PG2", "PG3",
-				       "PG4", "PG5";
+					   "PG4", "PG5";
 				function = "mmc1";
 				drive-strength = <30>;
 				bias-pull-up;
@@ -422,7 +411,7 @@
 			compatible = "allwinner,sun4i-a10-timer";
 			reg = <0x01c20c00 0xa0>;
 			interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>,
-				     <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
+						 <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
 			clocks = <&osc24M>;
 		};
 
@@ -509,7 +498,7 @@
 			sda-gpios = <&pio 4 22 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>;
 			scl-gpios = <&pio 4 21 (GPIO_ACTIVE_HIGH|GPIO_OPEN_DRAIN)>;
 			i2c-gpio,delay-us = <2>;	/* ~100 kHz */
-			
+
 			/*
 			reg = <0x01c2b000 0x400>;
 			interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
@@ -519,6 +508,7 @@
 			pinctrl-0 = <&i2c1_pins>;
 			status = "disabled";
 			*/
+
 			#address-cells = <1>;
 			#size-cells = <0>;
 		};
@@ -526,30 +516,30 @@
 		spi0: spi0@01c68000 {
 			/**/
 			compatible = "allwinner,sun8i-h3-spi";
-			
+
 			reg = <0x01c68000 0x1000>;
 			interrupts = <GIC_SPI 65 IRQ_TYPE_LEVEL_HIGH>;
 			clocks = <&ccu CLK_BUS_SPI0>, <&ccu CLK_SPI0>;
 			clock-names = "ahb", "mod";
-			
+
 			dmas = <&dma 23>, <&dma 23>;
 			dma-names = "rx", "tx";
-			
+
 			pinctrl-names = "default";
 			pinctrl-0 = <&spi0_pins>;
 
 			/**
 			cs-gpios =  <&pio 2 2 GPIO_ACTIVE_HIGH>;
 			**/
-			
+
 			resets = <&ccu RST_BUS_SPI0>;
 			/**/
-			
+
 			status = "disabled";
 
 			#address-cells = <1>;
 			#size-cells = <0>;
-		
+
 			/********************
 			compatible = "spi-gpio";
 			#address-cells = <0x1>;
@@ -563,16 +553,16 @@
 			gpio-mosi = <&pio 2 3 GPIO_ACTIVE_HIGH>;
 			/* cs-gpios = "PC2"; * /
 			cs-gpios =  <&pio 2 2 GPIO_ACTIVE_HIGH>;
-			
+
 			num-chipselects = <1>;
 			********************/
 		};
-		
+
 
 
 /* VVV */
 
-	emac: ethernet@1c30000 {
+		emac: ethernet@1c30000 {
 			compatible = "allwinner,sun8i-v3s-emac";
 			syscon = <&syscon>;
 			reg = <0x01c30000 0x104>;
@@ -587,36 +577,36 @@
 			phy-handle = <&int_mii_phy>;
 			phy-mode = "mii";
 			status = "disabled";
-		
-		mdio: mdio {
-			#address-cells = <1>;
-			#size-cells = <0>;
-			compatible = "snps,dwmac-mdio";
-		};
 
-		mdio-mux {
-			compatible = "mdio-mux", "allwinner,sun8i-h3-mdio-mux";
-			#address-cells = <1>;
-			#size-cells = <0>;
-
-			mdio-parent-bus = <&mdio>;
-
-			int_mdio: mdio@1 {
-				compatible = "allwinner,sun8i-h3-mdio-internal";
-				reg = <1>;
+			mdio: mdio {
 				#address-cells = <1>;
 				#size-cells = <0>;
-				
-				int_mii_phy: ethernet-phy@1 {
-					reg = <1>;
-					clocks = <&ccu CLK_BUS_EPHY>;
-					resets = <&ccu RST_BUS_EPHY>;
-					phy-is-integrated;
-				};
+				compatible = "snps,dwmac-mdio";
 			};
-		
+
+			mdio-mux {
+				compatible = "mdio-mux", "allwinner,sun8i-h3-mdio-mux";
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				mdio-parent-bus = <&mdio>;
+
+				int_mdio: mdio@1 {
+					compatible = "allwinner,sun8i-h3-mdio-internal";
+					reg = <1>;
+					#address-cells = <1>;
+					#size-cells = <0>;
+
+					int_mii_phy: ethernet-phy@1 {
+						reg = <1>;
+						clocks = <&ccu CLK_BUS_EPHY>;
+						resets = <&ccu RST_BUS_EPHY>;
+						phy-is-integrated;
+					};
+				};
+
+			};
 		};
-	};
 
 /* AAA */
 
@@ -624,9 +614,9 @@
 		gic: interrupt-controller@01c81000 {
 			compatible = "arm,cortex-a7-gic", "arm,cortex-a15-gic";
 			reg = <0x01c81000 0x1000>,
-			      <0x01c82000 0x1000>,
-			      <0x01c84000 0x2000>,
-			      <0x01c86000 0x2000>;
+				  <0x01c82000 0x1000>,
+				  <0x01c84000 0x2000>,
+				  <0x01c86000 0x2000>;
 			interrupt-controller;
 			#interrupt-cells = <3>;
 			interrupts = <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
