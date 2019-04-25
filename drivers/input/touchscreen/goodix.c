@@ -22,6 +22,7 @@
 #include <linux/i2c.h>
 #include <linux/input.h>
 #include <linux/input/mt.h>
+#include <linux/input-polldev.h>
 #include <linux/module.h>
 #include <linux/delay.h>
 #include <linux/irq.h>
@@ -31,9 +32,14 @@
 #include <linux/of.h>
 #include <asm/unaligned.h>
 
+
+/* polling interval in ms */
+#define POLL_INTERVAL	50
+
 struct goodix_ts_data {
 	struct i2c_client *client;
-	struct input_dev *input_dev;
+//	struct input_dev *input_dev;
+	struct input_polled_dev *input_dev;
 	int abs_x_max;
 	int abs_y_max;
 	bool swapped_x_y;
@@ -241,12 +247,12 @@ static void goodix_ts_report_touch(struct goodix_ts_data *ts, u8 *coor_data)
 	if (ts->swapped_x_y)
 		swap(input_x, input_y);
 
-	input_mt_slot(ts->input_dev, id);
-	input_mt_report_slot_state(ts->input_dev, MT_TOOL_FINGER, true);
-	input_report_abs(ts->input_dev, ABS_MT_POSITION_X, input_x);
-	input_report_abs(ts->input_dev, ABS_MT_POSITION_Y, input_y);
-	input_report_abs(ts->input_dev, ABS_MT_TOUCH_MAJOR, input_w);
-	input_report_abs(ts->input_dev, ABS_MT_WIDTH_MAJOR, input_w);
+	input_mt_slot(ts->input_dev->input, id);
+	input_mt_report_slot_state(ts->input_dev->input, MT_TOOL_FINGER, true);
+	input_report_abs(ts->input_dev->input, ABS_MT_POSITION_X, input_x);
+	input_report_abs(ts->input_dev->input, ABS_MT_POSITION_Y, input_y);
+	input_report_abs(ts->input_dev->input, ABS_MT_TOUCH_MAJOR, input_w);
+	input_report_abs(ts->input_dev->input, ABS_MT_WIDTH_MAJOR, input_w);
 }
 
 /**
@@ -271,8 +277,8 @@ static void goodix_process_events(struct goodix_ts_data *ts)
 		goodix_ts_report_touch(ts,
 				&point_data[1 + GOODIX_CONTACT_SIZE * i]);
 
-	input_mt_sync_frame(ts->input_dev);
-	input_sync(ts->input_dev);
+	input_mt_sync_frame(ts->input_dev->input);
+	input_sync(ts->input_dev->input);
 }
 
 /**
@@ -281,16 +287,18 @@ static void goodix_process_events(struct goodix_ts_data *ts)
  * @irq: interrupt number.
  * @dev_id: private data pointer.
  */
-static irqreturn_t goodix_ts_irq_handler(int irq, void *dev_id)
+static void goodix_poll(struct input_polled_dev *dev)
+//static irqreturn_t goodix_ts_irq_handler(int irq, void *dev_id)
 {
-	struct goodix_ts_data *ts = dev_id;
+//	struct goodix_ts_data *ts = dev_id;
+	struct goodix_ts_data *ts = dev->private;
 
 	goodix_process_events(ts);
 
 	if (goodix_i2c_write_u8(ts->client, GOODIX_READ_COOR_ADDR, 0) < 0)
 		dev_err(&ts->client->dev, "I2C write end_cmd error\n");
 
-	return IRQ_HANDLED;
+//	return IRQ_HANDLED;
 }
 
 static void goodix_free_irq(struct goodix_ts_data *ts)
@@ -300,9 +308,10 @@ static void goodix_free_irq(struct goodix_ts_data *ts)
 
 static int goodix_request_irq(struct goodix_ts_data *ts)
 {
-	return devm_request_threaded_irq(&ts->client->dev, ts->client->irq,
-					 NULL, goodix_ts_irq_handler,
-					 ts->irq_flags, ts->client->name, ts);
+//	return devm_request_threaded_irq(&ts->client->dev, ts->client->irq,
+//					 NULL, goodix_ts_irq_handler,
+//					 ts->irq_flags, ts->client->name, ts);
+	return 0;
 }
 
 /**
@@ -589,30 +598,36 @@ static int goodix_request_input_dev(struct goodix_ts_data *ts)
 {
 	int error;
 
-	ts->input_dev = devm_input_allocate_device(&ts->client->dev);
+//	ts->input_dev = devm_input_allocate_device(&ts->client->dev);
+	ts->input_dev = devm_input_allocate_polled_device(&ts->client->dev);
 	if (!ts->input_dev) {
 		dev_err(&ts->client->dev, "Failed to allocate input device.");
 		return -ENOMEM;
 	}
 
-	input_set_abs_params(ts->input_dev, ABS_MT_POSITION_X,
-			     0, ts->abs_x_max, 0, 0);
-	input_set_abs_params(ts->input_dev, ABS_MT_POSITION_Y,
-			     0, ts->abs_y_max, 0, 0);
-	input_set_abs_params(ts->input_dev, ABS_MT_WIDTH_MAJOR, 0, 255, 0, 0);
-	input_set_abs_params(ts->input_dev, ABS_MT_TOUCH_MAJOR, 0, 255, 0, 0);
+	ts->input_dev->poll = goodix_poll;
+	ts->input_dev->poll_interval = POLL_INTERVAL;
+	ts->input_dev->private = ts;
 
-	input_mt_init_slots(ts->input_dev, ts->max_touch_num,
+	input_set_abs_params(ts->input_dev->input, ABS_MT_POSITION_X,
+			     0, ts->abs_x_max, 0, 0);
+	input_set_abs_params(ts->input_dev->input, ABS_MT_POSITION_Y,
+			     0, ts->abs_y_max, 0, 0);
+	input_set_abs_params(ts->input_dev->input, ABS_MT_WIDTH_MAJOR, 0, 255, 0, 0);
+	input_set_abs_params(ts->input_dev->input, ABS_MT_TOUCH_MAJOR, 0, 255, 0, 0);
+
+	input_mt_init_slots(ts->input_dev->input, ts->max_touch_num,
 			    INPUT_MT_DIRECT | INPUT_MT_DROP_UNUSED);
 
-	ts->input_dev->name = "Goodix Capacitive TouchScreen";
-	ts->input_dev->phys = "input/ts";
-	ts->input_dev->id.bustype = BUS_I2C;
-	ts->input_dev->id.vendor = 0x0416;
-	ts->input_dev->id.product = ts->id;
-	ts->input_dev->id.version = ts->version;
+	ts->input_dev->input->name = "Goodix Capacitive TouchScreen";
+	ts->input_dev->input->phys = "input/ts";
+	ts->input_dev->input->id.bustype = BUS_I2C;
+	ts->input_dev->input->id.vendor = 0x0416;
+	ts->input_dev->input->id.product = ts->id;
+	ts->input_dev->input->id.version = ts->version;
 
-	error = input_register_device(ts->input_dev);
+//	error = input_register_device(ts->input_dev);
+	error = input_register_polled_device(ts->input_dev);
 	if (error) {
 		dev_err(&ts->client->dev,
 			"Failed to register input device: %d", error);

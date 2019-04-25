@@ -1,3 +1,47 @@
+How to compile
+==============
+This sources is preconfigured to use with Allwinner V3s based board: https://github.com/bhgv/Blueberry-PI_Allwinner-V3s_LVDS_AXP203 .
+
+* first edit `env` to set the path to your `arm-linux-gcc`.
+* after run `source ./env` to set environment.
+
+to build:
+---------
+just run
+```
+./bld.sh
+./bld-mods.sh
+```
+compiled kernel, device tree and kernel modules will be in the `out` folder
+
+to config:
+----------
+run
+```
+./conf.sh
+```
+
+Touch screens
+=============
+
+how to enable touchscreen drivers here:
+---------------------------------------
+```
+modprobe i2c-gpio  # i2c port for touch screens here is gpio-emulated
+
+modprobe tsc2003   # for tsc2003 resistive touchscreen driver
+#or
+modprobe goodix    # for Goodix capacitive touchscreens (tested with gt911)
+```
+
+to test touchscreens it may be helpful
+--------------------------------------
+* `i2cdetect -y <N of i2c device>` to check if it is present
+* `evtest` to see events returned by touchscreens 
+
+
+* * *
+
 Linux kernel
 ============
 

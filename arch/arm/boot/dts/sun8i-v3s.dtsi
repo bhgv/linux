@@ -458,6 +458,7 @@
 			status = "disabled";
 		};
 
+		/**
 		uart1: serial@01c28400 {
 			compatible = "snps,dw-apb-uart";
 			reg = <0x01c28400 0x400>;
@@ -479,6 +480,7 @@
 			resets = <&ccu RST_BUS_UART2>;
 			status = "disabled";
 		};
+		/**/
 
 		i2c0: i2c@01c2ac00 {
 			compatible = "allwinner,sun6i-a31-i2c";
